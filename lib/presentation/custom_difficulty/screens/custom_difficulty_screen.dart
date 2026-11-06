@@ -478,13 +478,14 @@ class CustomDifficultyScreen extends StatelessWidget {
 
     final screenWidth = MediaQuery.of(context).size.width;
     final isDesktop = screenWidth >= 768;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF9FAFB),
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1A237E),
-        elevation: 0,
+        backgroundColor: isDark ? const Color(0xFF1E1E2E) : Colors.white,
+        foregroundColor: isDark ? Colors.white : const Color(0xFF0288D1),
+        elevation: 0.5,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -506,7 +507,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const FittedBox(
+                          FittedBox(
                             fit: BoxFit.scaleDown,
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -514,7 +515,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF101828),
+                                color: isDark ? Colors.white : const Color(0xFF101828),
                               ),
                             ),
                           ),
@@ -523,16 +524,22 @@ class CustomDifficultyScreen extends StatelessWidget {
                             'Atur dan pilih preset untuk Operasi Matematika',
                             style: TextStyle(
                               fontSize: 15,
-                              color: Colors.grey.shade600,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                             ),
                           ),
                           Container(
                             margin: const EdgeInsets.only(top: 8),
                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                             decoration: BoxDecoration(
-                              color: settings.difficulty == 'Custom' ? const Color(0xFFE8F5E9) : const Color(0xFFFFF8E1),
+                              color: settings.difficulty == 'Custom'
+                                  ? (isDark ? const Color(0xFF1B3B22) : const Color(0xFFE8F5E9))
+                                  : (isDark ? const Color(0xFF3E2723) : const Color(0xFFFFF8E1)),
                               borderRadius: BorderRadius.circular(6),
-                              border: Border.all(color: settings.difficulty == 'Custom' ? Colors.green.shade300 : Colors.amber.shade300),
+                              border: Border.all(
+                                color: settings.difficulty == 'Custom'
+                                    ? (isDark ? Colors.green.shade700 : Colors.green.shade300)
+                                    : (isDark ? Colors.amber.shade700 : Colors.amber.shade300),
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -540,7 +547,9 @@ class CustomDifficultyScreen extends StatelessWidget {
                                 Icon(
                                   settings.difficulty == 'Custom' ? Icons.check_circle : Icons.info_outline,
                                   size: 14,
-                                  color: settings.difficulty == 'Custom' ? Colors.green.shade800 : Colors.amber.shade900,
+                                  color: settings.difficulty == 'Custom'
+                                      ? (isDark ? Colors.green.shade300 : Colors.green.shade800)
+                                      : (isDark ? Colors.amber.shade300 : Colors.amber.shade900),
                                 ),
                                 const SizedBox(width: 6),
                                 Flexible(
@@ -551,7 +560,9 @@ class CustomDifficultyScreen extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.w600,
-                                      color: settings.difficulty == 'Custom' ? Colors.green.shade900 : Colors.amber.shade900,
+                                      color: settings.difficulty == 'Custom'
+                                          ? (isDark ? Colors.green.shade300 : Colors.green.shade900)
+                                          : (isDark ? Colors.amber.shade300 : Colors.amber.shade900),
                                     ),
                                   ),
                                 ),
@@ -563,19 +574,19 @@ class CustomDifficultyScreen extends StatelessWidget {
                     ),
                     OutlinedButton.icon(
                       onPressed: () => _showAddPresetDialog(context, provider),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.add_circle,
-                        color: Color(0xFF1976D2),
+                        color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
                       ),
-                      label: const Text(
+                      label: Text(
                         'Buat Preset Baru',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF1976D2),
+                          color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
                         ),
                       ),
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Color(0xFF1976D2)),
+                        side: BorderSide(color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1)),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 16,
@@ -696,6 +707,7 @@ class CustomDifficultyScreen extends StatelessWidget {
     List<CustomPreset> presets,
     String activeId,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     String title = 'Operasi';
     String subtitle = '';
     Color themeColor = const Color(0xFF1976D2);
@@ -705,29 +717,29 @@ class CustomDifficultyScreen extends StatelessWidget {
       title = 'Operasi 1 Variabel';
       subtitle = 'Faktorial, Nilai Mutlak';
       themeColor = const Color(0xFF2E7D32);
-      headerBgColor = const Color(0xFFF1F8F1);
+      headerBgColor = isDark ? const Color(0xFF1E3A20) : const Color(0xFFF1F8F1);
     } else if (presetType == 2) {
       title = 'Operasi 2 Variabel';
       subtitle = 'Penjumlahan, Pengurangan, dll.';
       themeColor = const Color(0xFF1976D2);
-      headerBgColor = const Color(0xFFF3F8FF);
+      headerBgColor = isDark ? const Color(0xFF162C46) : const Color(0xFFF3F8FF);
     } else if (presetType == 3) {
       title = 'Complex Numbers';
       subtitle = 'Akar, Pangkat, Logaritma';
       themeColor = const Color(0xFFE65100);
-      headerBgColor = const Color(0xFFFFF3E0);
+      headerBgColor = isDark ? const Color(0xFF3E2310) : const Color(0xFFFFF3E0);
     } else {
       title = 'Berantai';
       subtitle = 'Arithmetic Memory';
       themeColor = const Color(0xFF6A1B9A);
-      headerBgColor = const Color(0xFFF3E5F5);
+      headerBgColor = isDark ? const Color(0xFF2E153E) : const Color(0xFFF3E5F5);
     }
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: isDark ? Colors.white12 : Colors.grey.shade300),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -740,7 +752,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                 topLeft: Radius.circular(11),
                 topRight: Radius.circular(11),
               ),
-              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+              border: Border(bottom: BorderSide(color: isDark ? Colors.white12 : Colors.grey.shade200)),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -753,7 +765,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w800,
-                        color: themeColor,
+                        color: isDark ? Colors.white : themeColor,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -761,7 +773,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                       subtitle,
                       style: TextStyle(
                         fontSize: 13,
-                        color: Colors.grey.shade600,
+                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                       ),
                     ),
                   ],
@@ -774,9 +786,13 @@ class CustomDifficultyScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Preset Tersedia',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700, 
+                    fontSize: 14,
+                    color: isDark ? Colors.white70 : Colors.black87,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 ...presets.map(
@@ -836,14 +852,15 @@ class CustomDifficultyScreen extends StatelessWidget {
     bool isActive,
     int presetType,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     Color themeColor = const Color(0xFF1976D2);
     if (presetType == 1) themeColor = const Color(0xFF2E7D32);
     if (presetType == 3) themeColor = const Color(0xFFE65100);
     if (presetType == 4) themeColor = const Color(0xFF6A1B9A);
 
     final bgColor = isActive
-        ? themeColor.withValues(alpha: 0.05)
-        : Colors.white;
+        ? (isDark ? themeColor.withValues(alpha: 0.25) : themeColor.withValues(alpha: 0.05))
+        : (isDark ? const Color(0xFF26263B) : Colors.white);
 
     String baseDigitText = '';
     if (presetType == 1) {
@@ -881,8 +898,6 @@ class CustomDifficultyScreen extends StatelessWidget {
       baseDigitText = 'Awal: ${preset.xDigit} Digit, Max: $baseVal [$opsStr]';
     }
 
-
-
     return GestureDetector(
       onTap: () {
         if (presetType == 1) {
@@ -911,7 +926,7 @@ class CustomDifficultyScreen extends StatelessWidget {
           color: bgColor,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isActive ? themeColor : Colors.grey.shade300,
+            color: isActive ? themeColor : (isDark ? Colors.white12 : Colors.grey.shade300),
             width: isActive ? 2 : 1,
           ),
         ),
@@ -926,7 +941,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                     preset.name,
                     style: TextStyle(
                       fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
-                      color: const Color(0xFF101828),
+                      color: isDark ? Colors.white : const Color(0xFF101828),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -937,7 +952,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                     children: [
                       Text(
                         baseDigitText,
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                        style: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600, fontSize: 13),
                       ),
                       if (preset.isSwappable) ...[
                         const SizedBox(width: 8),
@@ -1003,20 +1018,21 @@ class CustomDifficultyScreen extends StatelessWidget {
     CustomPreset other,
     CustomPreset memory,
   ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20.0),
       decoration: BoxDecoration(
-        color: const Color(0xFFF8F9FA),
+        color: isDark ? const Color(0xFF1E1E2E) : const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: isDark ? Colors.white12 : Colors.grey.shade200),
       ),
       child: Column(
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.lightbulb_outline,
-                color: Color(0xFF1976D2),
+                color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
                 size: 28,
               ),
               const SizedBox(width: 16),
@@ -1024,11 +1040,11 @@ class CustomDifficultyScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Preset Aktif Saat Ini',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF101828),
+                        color: isDark ? Colors.white : const Color(0xFF101828),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -1036,7 +1052,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                       text: TextSpan(
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.grey.shade700,
+                          color: isDark ? Colors.grey.shade300 : Colors.grey.shade700,
                         ),
                         children: [
                           const TextSpan(text: 'Operasi 2 Variabel: '),
@@ -1107,7 +1123,7 @@ class CustomDifficultyScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          const Divider(),
+          Divider(color: isDark ? Colors.white12 : Colors.grey.shade300),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1115,8 +1131,8 @@ class CustomDifficultyScreen extends StatelessWidget {
               Expanded(
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Colors.grey.shade200,
-                    foregroundColor: Colors.black87,
+                    backgroundColor: isDark ? const Color(0xFF26263B) : Colors.grey.shade200,
+                    foregroundColor: isDark ? Colors.white70 : Colors.black87,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 8,
                       vertical: 16,
@@ -1143,21 +1159,21 @@ class CustomDifficultyScreen extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1976D2),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0288D1),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    elevation: 0,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
-                onPressed: () {
-                  Navigator.pop(context); // Save & Go back
-                },
+                  onPressed: () {
+                    Navigator.pop(context); // Save & Go back
+                  },
                   child: const FittedBox(
                     fit: BoxFit.scaleDown,
                     child: Text(

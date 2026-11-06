@@ -139,13 +139,15 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildQuestionsAndDurationSegment(BuildContext context, AppSettings settings, SettingsProvider provider, String lang) {
     int activeQuestionValue = settings.isDurationMode ? -1 : settings.questionCount;
     int activeDurationValue = settings.isDurationMode ? settings.durationMinutes : -1;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : Colors.black87;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppLocalizations.get(lang, 'questions'), style: const TextStyle(fontSize: 16, color: Colors.black87)),
+          Text(AppLocalizations.get(lang, 'questions'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textColor)),
           const SizedBox(height: 12),
           _buildSegmentCore(
             context,
@@ -157,7 +159,7 @@ class SettingsScreen extends StatelessWidget {
             lang,
           ),
           const SizedBox(height: 16),
-          Text(AppLocalizations.get(lang, 'duration_minutes'), style: const TextStyle(fontSize: 16, color: Colors.black87)),
+          Text(AppLocalizations.get(lang, 'duration_minutes'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textColor)),
           const SizedBox(height: 12),
           _buildSegmentCore(
             context,
@@ -183,10 +185,15 @@ class SettingsScreen extends StatelessWidget {
     String lang
   ) {
     bool isCustomActive = activeValue != -1 && !standardOptions.contains(activeValue);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final unselectedColor = isDark ? Colors.white70 : Colors.black87;
+    final borderColor = isDark ? Colors.white24 : Colors.grey.shade300;
+    const activeColor = Color(0xFF0288D1);
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
+        color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
+        border: Border.all(color: borderColor),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -201,7 +208,7 @@ class SettingsScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        color: isSelected ? const Color(0xFF1976D2) : Colors.transparent,
+                        color: isSelected ? activeColor : Colors.transparent,
                         width: 3,
                       ),
                     ),
@@ -212,7 +219,7 @@ class SettingsScreen extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
-                        color: isSelected ? const Color(0xFF1976D2) : Colors.black87,
+                        color: isSelected ? activeColor : unselectedColor,
                       ),
                     ),
                   ),
@@ -232,7 +239,7 @@ class SettingsScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border(
                     bottom: BorderSide(
-                      color: isCustomActive ? const Color(0xFF1976D2) : Colors.transparent,
+                      color: isCustomActive ? activeColor : Colors.transparent,
                       width: 3,
                     ),
                   ),
@@ -243,7 +250,7 @@ class SettingsScreen extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: isCustomActive ? const Color(0xFF1976D2) : Colors.black87,
+                      color: isCustomActive ? activeColor : unselectedColor,
                     ),
                   ),
                 ),
