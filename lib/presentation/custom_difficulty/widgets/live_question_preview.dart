@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../../../core/localization/app_localizations.dart';
 
 class LiveQuestionPreview extends StatelessWidget {
   final int presetType;
@@ -11,6 +12,7 @@ class LiveQuestionPreview extends StatelessWidget {
   final int? decimalPlaces;
   final bool isRandomDecimalDigits;
   final int? maxThreshold;
+  final String? lang;
 
   const LiveQuestionPreview({
     super.key,
@@ -23,12 +25,14 @@ class LiveQuestionPreview extends StatelessWidget {
     this.decimalPlaces,
     this.isRandomDecimalDigits = false,
     this.maxThreshold,
+    this.lang,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final samples = _generateSamples();
+    final previewTitle = AppLocalizations.get(lang ?? 'Indonesian', 'question_preview');
 
     return Container(
       margin: const EdgeInsets.only(top: 14),
@@ -48,7 +52,7 @@ class LiveQuestionPreview extends StatelessWidget {
                 ),
                 const SizedBox(width: 6),
                 Text(
-                  'Pratinjau Soal:',
+                  previewTitle,
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,

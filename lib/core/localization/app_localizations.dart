@@ -154,6 +154,15 @@ class AppLocalizations {
       'delete_preset_desc': 'This preset will be permanently deleted.',
       'delete': 'Delete',
       'max_presets': 'Maximum 10 presets',
+      'random_decimal_digits': 'Random Decimal Digits',
+      'switch_xy': 'Switch X,Y',
+      'decimal_places_label': 'Decimal Places:',
+      'question_preview': 'Question Preview:',
+      'create_preset': 'Create New Preset',
+      'save_preset_button': 'Save Preset',
+      'preset_name_optional': 'Preset Name (optional)',
+      'select_operation_type': 'Select Operation Type',
+      'random_tag': ' (Random)',
     },
     'Indonesian': {
       'app_title': 'Math Workout',
@@ -312,6 +321,15 @@ class AppLocalizations {
       'delete_preset_desc': 'Preset ini akan dihapus permanen.',
       'delete': 'Hapus',
       'max_presets': 'Maksimal 10 preset',
+      'random_decimal_digits': 'Acak Digit Belakang Koma',
+      'switch_xy': 'Switch X,Y',
+      'decimal_places_label': 'Angka di Belakang Koma:',
+      'question_preview': 'Pratinjau Soal:',
+      'create_preset': 'Buat Preset Baru',
+      'save_preset_button': 'Simpan Preset',
+      'preset_name_optional': 'Nama Preset (opsional)',
+      'select_operation_type': 'Pilih Jenis Operasi',
+      'random_tag': ' (Acak)',
     }
   };
 

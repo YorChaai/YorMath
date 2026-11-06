@@ -2,9 +2,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mathall/data/models/app_settings.dart';
 import 'package:mathall/core/providers/settings_provider.dart';
+import 'package:mathall/core/localization/app_localizations.dart';
 import 'live_question_preview.dart';
 
   void showEditPresetDialog(BuildContext context, SettingsProvider provider, CustomPreset preset, int presetType) {
+    final lang = provider.settings.language;
     String name = preset.name;
     int xDigit = preset.xDigit;
     int yDigit = preset.yDigit ?? 1;
@@ -168,10 +170,24 @@ import 'live_question_preview.dart';
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Expanded(
+                          Text(
+                            AppLocalizations.get(lang, 'switch_xy'),
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          Switch(
+                            value: isSwappable,
+                            onChanged: (val) => setState(() => isSwappable = val),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
                             child: Text(
-                              'Angka di Belakang Koma:',
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              AppLocalizations.get(lang, 'decimal_places_label'),
+                              style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -190,35 +206,10 @@ import 'live_question_preview.dart';
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Switch X/Y', style: TextStyle(fontWeight: FontWeight.w600)),
-                                Text('X=2,Y=3 jadi X=3,Y=2 secara acak', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                              ],
-                            ),
-                          ),
-                          Switch(
-                            value: isSwappable,
-                            onChanged: (val) => setState(() => isSwappable = val),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 12),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('Acak Digit Belakang Koma', style: TextStyle(fontWeight: FontWeight.w600)),
-                                Text(
-                                  'Variasi 1 s/d ${decimalPlaces ?? 1} digit (misal: 0.70 + 0.456)',
-                                  style: const TextStyle(fontSize: 11, color: Colors.grey),
-                                ),
-                              ],
+                            child: Text(
+                              AppLocalizations.get(lang, 'random_decimal_digits'),
+                              style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                           Switch(
@@ -544,6 +535,7 @@ import 'live_question_preview.dart';
                       decimalPlaces: decimalPlaces,
                       isRandomDecimalDigits: isRandomDecimalDigits,
                       maxThreshold: maxThreshold,
+                      lang: lang,
                     ),
                   ],
                 ),
@@ -551,7 +543,7 @@ import 'live_question_preview.dart';
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Batal', style: TextStyle(color: Colors.grey)),
+                  child: Text(AppLocalizations.get(lang, 'cancel'), style: const TextStyle(color: Colors.grey)),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -591,12 +583,12 @@ import 'live_question_preview.dart';
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
-                        title: const Text('Konfirmasi'),
-                        content: const Text('Apakah Anda yakin ingin menyimpan perubahan?'),
+                        title: Text(lang == 'English' ? 'Confirmation' : 'Konfirmasi'),
+                        content: Text(lang == 'English' ? 'Are you sure you want to save changes?' : 'Apakah Anda yakin ingin menyimpan perubahan?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.pop(context),
-                            child: const Text('Batal', style: TextStyle(color: Colors.grey)),
+                            child: Text(AppLocalizations.get(lang, 'cancel'), style: const TextStyle(color: Colors.grey)),
                           ),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF1976D2)),
@@ -613,13 +605,13 @@ import 'live_question_preview.dart';
                               Navigator.pop(context); // close confirmation
                               Navigator.pop(context); // close edit dialog
                             },
-                            child: const Text('Simpan', style: TextStyle(color: Colors.white)),
+                            child: Text(AppLocalizations.get(lang, 'save'), style: const TextStyle(color: Colors.white)),
                           ),
                         ],
                       ),
                     );
                   },
-                  child: const Text('Simpan'),
+                  child: Text(AppLocalizations.get(lang, 'save')),
                 ),
               ],
             );

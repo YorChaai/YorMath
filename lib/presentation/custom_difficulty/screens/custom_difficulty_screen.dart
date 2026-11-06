@@ -4,12 +4,14 @@ import 'package:mathall/core/providers/settings_provider.dart';
 import 'package:mathall/data/models/app_settings.dart';
 import 'package:mathall/presentation/custom_difficulty/widgets/preset_edit_dialog.dart';
 import 'package:mathall/presentation/custom_difficulty/widgets/live_question_preview.dart';
+import 'package:mathall/core/localization/app_localizations.dart';
 import 'dart:math';
 
 class CustomDifficultyScreen extends StatelessWidget {
   const CustomDifficultyScreen({super.key});
 
   void _showAddPresetDialog(BuildContext context, SettingsProvider provider) {
+    final lang = provider.settings.language;
     int selectedVarType =
         2; // 2 for 'Operasi 2 Variabel', 1 for 'Operasi 1 Variabel', 3 for 'Lain-Lain', 4 for 'Berantai'
     String name = '';
@@ -45,18 +47,18 @@ class CustomDifficultyScreen extends StatelessWidget {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
               ),
-              title: const Text(
-                'Buat Preset Baru',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              title: Text(
+                AppLocalizations.get(lang, 'create_preset'),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<int>(
-                      decoration: const InputDecoration(
-                        labelText: 'Pilih Jenis Operasi',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.get(lang, 'select_operation_type'),
+                        border: const OutlineInputBorder(),
                       ),
                       initialValue: selectedVarType,
                       items: const [
@@ -84,9 +86,9 @@ class CustomDifficultyScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     TextField(
-                      decoration: const InputDecoration(
-                        labelText: 'Nama Preset (opsional)',
-                        border: OutlineInputBorder(),
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.get(lang, 'preset_name_optional'),
+                        border: const OutlineInputBorder(),
                       ),
                       onChanged: (val) => name = val,
                     ),
@@ -114,17 +116,6 @@ class CustomDifficultyScreen extends StatelessWidget {
                         ],
                       ),
                     ] else if (selectedVarType == 2) ...[
-                      SwitchListTile(
-                        title: const Text('Switch X,Y', style: TextStyle(fontWeight: FontWeight.w600)),
-                        value: isSwappable,
-                        onChanged: (val) {
-                          setState(() => isSwappable = val);
-                        },
-                        contentPadding: EdgeInsets.zero,
-                        activeTrackColor: const Color(0xFF1976D2).withValues(alpha: 0.5),
-                        activeThumbColor: const Color(0xFF1976D2),
-                      ),
-                      const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -172,10 +163,28 @@ class CustomDifficultyScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Expanded(
+                          Text(
+                            AppLocalizations.get(lang, 'switch_xy'),
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          Switch(
+                            value: isSwappable,
+                            onChanged: (val) {
+                              setState(() => isSwappable = val);
+                            },
+                            activeTrackColor: const Color(0xFF1976D2).withValues(alpha: 0.5),
+                            activeThumbColor: const Color(0xFF1976D2),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
                             child: Text(
-                              'Batas Desimal (Precision):',
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              AppLocalizations.get(lang, 'decimal_places_label'),
+                              style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -195,20 +204,16 @@ class CustomDifficultyScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('Acak Digit Belakang Koma', style: TextStyle(fontWeight: FontWeight.w600)),
-                                Text(
-                                  'Variasi 1 s/d ${decimalPlaces ?? 1} digit (misal: 0.70 + 0.456)',
-                                  style: const TextStyle(fontSize: 11, color: Colors.grey),
-                                ),
-                              ],
+                            child: Text(
+                              AppLocalizations.get(lang, 'random_decimal_digits'),
+                              style: const TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                           Switch(
                             value: isRandomDecimalDigits,
                             onChanged: (val) => setState(() => isRandomDecimalDigits = val),
+                            activeTrackColor: const Color(0xFF1976D2).withValues(alpha: 0.5),
+                            activeThumbColor: const Color(0xFF1976D2),
                           ),
                         ],
                       ),
@@ -405,6 +410,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                       decimalPlaces: selectedVarType == 2 ? decimalPlaces : null,
                       isRandomDecimalDigits: selectedVarType == 2 ? isRandomDecimalDigits : false,
                       maxThreshold: (selectedVarType == 1 || selectedVarType == 2 || selectedVarType == 4) ? maxThreshold : null,
+                      lang: lang,
                     ),
                   ],
                 ),
@@ -412,9 +418,9 @@ class CustomDifficultyScreen extends StatelessWidget {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text(
-                    'Batal',
-                    style: TextStyle(color: Colors.grey),
+                  child: Text(
+                    AppLocalizations.get(lang, 'cancel'),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                 ),
                 ElevatedButton(
@@ -471,7 +477,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                     }
                     Navigator.pop(context);
                   },
-                  child: const Text('Simpan Preset'),
+                  child: Text(AppLocalizations.get(lang, 'save_preset_button')),
                 ),
               ],
             );
@@ -888,6 +894,7 @@ class CustomDifficultyScreen extends StatelessWidget {
     bool isActive,
     int presetType,
   ) {
+    final lang = provider.settings.language;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     Color themeColor = const Color(0xFF1976D2);
     if (presetType == 1) themeColor = const Color(0xFF2E7D32);
@@ -904,8 +911,9 @@ class CustomDifficultyScreen extends StatelessWidget {
       baseDigitText = 'X: ${preset.xDigit} Digit$thresh';
     } else if (presetType == 2) {
       String thresh = preset.maxThreshold != null ? ', Batas: ${preset.maxThreshold}' : '';
-      String acak = preset.isRandomDecimalDigits ? ' (Acak)' : '';
-      String dec = preset.decimalPlaces != null ? ', Desimal: ${preset.decimalPlaces}$acak' : '';
+      String acak = preset.isRandomDecimalDigits ? AppLocalizations.get(lang, 'random_tag') : '';
+      String decLabel = lang == 'English' ? 'Dec' : 'Desimal';
+      String dec = preset.decimalPlaces != null ? ', $decLabel: ${preset.decimalPlaces}$acak' : '';
       baseDigitText = 'X: ${preset.xDigit} Digit, Y: ${preset.yDigit ?? preset.xDigit} Digit$dec$thresh';
     } else if (presetType == 3) {
       final baseVal = preset.baseDigit ?? 10;
