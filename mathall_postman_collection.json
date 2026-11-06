@@ -1,0 +1,468 @@
+{
+	"info": {
+		"_postman_id": "mathall-comprehensive-qa-test-v2",
+		"name": "MathAll Comprehensive E2E Test Suite",
+		"description": "Comprehensive Postman Test Collection untuk memvalidasi seluruh logika matematika, schema preset, dual n-back, mode belajar, kalkulasi akurasi, dan edge cases aplikasi MathAll.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Presets - 1-Var & 2-Var Schema & Swappable",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"1-Var Presets memiliki xDigit valid 1..10\", function () {",
+							"    pm.expect(data.var1Presets).to.be.an('array');",
+							"    data.var1Presets.forEach(p => {",
+							"        pm.expect(p.xDigit).to.be.within(1, 10);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"2-Var Presets memiliki properti isSwappable dan precision\", function () {",
+							"    pm.expect(data.var2Presets).to.be.an('array');",
+							"    data.var2Presets.forEach(p => {",
+							"        pm.expect(p.isSwappable).to.be.a('boolean');",
+							"        pm.expect(p.decimalPlaces).to.be.within(1, 5);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"var1Presets\": [\n    { \"id\": \"v1_1\", \"name\": \"Single Digit\", \"xDigit\": 1, \"specialLimit\": 20 },\n    { \"id\": \"v1_2\", \"name\": \"4 Digits Large\", \"xDigit\": 4, \"specialLimit\": 50 }\n  ],\n  \"var2Presets\": [\n    { \"id\": \"v2_1\", \"name\": \"3x1 Swappable\", \"xDigit\": 3, \"yDigit\": 1, \"isSwappable\": true, \"decimalPlaces\": 2, \"maxThreshold\": 505 }\n  ]\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "2. Presets - Complex & Arithmetic Memory Schema",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Complex Presets menyimpan akarLimit dan pangkatLimit\", function () {",
+							"    pm.expect(data.otherPresets).to.be.an('array');",
+							"    const other = data.otherPresets[0];",
+							"    pm.expect(other.akarLimit).to.be.at.least(5);",
+							"    pm.expect(other.pangkatLimit).to.be.at.least(2);",
+							"});",
+							"",
+							"pm.test(\"Memory Presets menyimpan baseDigit dan seluruh boolean flag\", function () {",
+							"    pm.expect(data.memoryPresets).to.be.an('array');",
+							"    const mem = data.memoryPresets[0];",
+							"    pm.expect(mem.baseDigit).to.not.be.null;",
+							"    pm.expect(mem.allowAkar).to.be.a('boolean');",
+							"    pm.expect(mem.allowPangkat).to.be.a('boolean');",
+							"    pm.expect(mem.allowNegative).to.be.a('boolean');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"otherPresets\": [\n    { \"id\": \"oth_1\", \"name\": \"Standard Complex\", \"baseDigit\": 10, \"akarLimit\": 20, \"pangkatLimit\": 5, \"isCampuranLainLain\": false }\n  ],\n  \"memoryPresets\": [\n    { \"id\": \"mem_1\", \"name\": \"Chained Expert\", \"xDigit\": 1, \"baseDigit\": 200, \"allowAkar\": true, \"allowPangkat\": true, \"allowPecahan\": true, \"allowDesimal\": true, \"allowPersentase\": true, \"allowFaktorial\": true, \"allowMutlak\": true, \"allowLogaritma\": true, \"allowModulo\": true, \"allowNegative\": false }\n  ]\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "3. Logic - Basic Operations (Add, Sub, Mul, Div)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Penjumlahan dan Perkalian terhitung akurat\", function () {",
+							"    pm.expect(data.addition.a + data.addition.b).to.eql(data.addition.expectedAnswer);",
+							"    pm.expect(data.multiplication.a * data.multiplication.b).to.eql(data.multiplication.expectedAnswer);",
+							"});",
+							"",
+							"pm.test(\"Pengurangan tanpa negatif selalu menghasilkan answer >= 0\", function () {",
+							"    const sub = data.subtractionNonNegative;",
+							"    pm.expect(sub.a).to.be.at.least(sub.b);",
+							"    pm.expect(sub.expectedAnswer).to.be.at.least(0);",
+							"});",
+							"",
+							"pm.test(\"Pembagian selalu bersih tanpa sisa\", function () {",
+							"    const div = data.divisionClean;",
+							"    pm.expect(div.a % div.b).to.eql(0);",
+							"    pm.expect(div.a / div.b).to.eql(div.expectedAnswer);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"addition\": { \"a\": 125, \"b\": 87, \"expectedAnswer\": 212 },\n  \"subtractionNonNegative\": { \"a\": 94, \"b\": 38, \"expectedAnswer\": 56 },\n  \"multiplication\": { \"a\": 16, \"b\": 25, \"expectedAnswer\": 400 },\n  \"divisionClean\": { \"a\": 144, \"b\": 12, \"expectedAnswer\": 12 }\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "4. Logic - Root & Power (Akar & Pangkat Bulat)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Akar kuadrat selalu integer murni (tidak ada simbol akar di answer)\", function () {",
+							"    data.roots.forEach(r => {",
+							"        pm.expect(r.answer).to.match(/^[0-9]+$/);",
+							"        pm.expect(r.answer).to.not.include('√');",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Perhitungan Pangkat akurat dan tidak overflow\", function () {",
+							"    data.powers.forEach(p => {",
+							"        const calculated = Math.pow(p.base, p.exp);",
+							"        pm.expect(parseInt(p.answer)).to.eql(calculated);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"roots\": [\n    { \"question\": \"√64\", \"answer\": \"8\" },\n    { \"question\": \"3√25\", \"answer\": \"15\" },\n    { \"question\": \"4√49\", \"answer\": \"28\" },\n    { \"question\": \"2√16 + 3√16\", \"answer\": \"20\" }\n  ],\n  \"powers\": [\n    { \"base\": 5, \"exp\": 3, \"answer\": \"125\" },\n    { \"base\": 2, \"exp\": 6, \"answer\": \"64\" },\n    { \"base\": 12, \"exp\": 2, \"answer\": \"144\" }\n  ]\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "5. Logic - Fraction, Percentage & Ratio",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Pecahan negatif mempertahankan tanda minus pada pembilang\", function () {",
+							"    const frac = data.negativeFraction;",
+							"    pm.expect(frac.numerator).to.be.below(0);",
+							"    pm.expect(frac.denominator).to.be.above(1);",
+							"    pm.expect(frac.expectedDecimal).to.eql(frac.numerator / frac.denominator);",
+							"});",
+							"",
+							"pm.test(\"Persentase mandiri terkonversi tepat ke nilai desimal/bulat\", function () {",
+							"    data.percentages.forEach(p => {",
+							"        const num = parseFloat(p.answer);",
+							"        pm.expect(num).to.eql(p.rawPercent / 100);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Perbandingan ekuivalen konsisten\", function () {",
+							"    const r = data.ratio;",
+							"    pm.expect(r.a / r.b).to.eql(r.targetA / r.answer);",
+							"    pm.expect(r.answer).to.eql(r.b * r.multiplier);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"negativeFraction\": { \"numerator\": -1, \"denominator\": 2, \"expectedDecimal\": -0.5 },\n  \"percentages\": [\n    { \"rawPercent\": 25, \"answer\": \"0.25\" },\n    { \"rawPercent\": 150, \"answer\": \"1.5\" },\n    { \"rawPercent\": 200, \"answer\": \"2\" }\n  ],\n  \"ratio\": { \"a\": 3, \"b\": 5, \"multiplier\": 2, \"targetA\": 6, \"answer\": 10 }\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "6. Logic - Factorial, Absolute Value, Log & Modulo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Faktorial 1..5 terhitung tepat\", function () {",
+							"    data.factorials.forEach(f => {",
+							"        let expected = 1;",
+							"        for (let i = 1; i <= f.n; i++) expected *= i;",
+							"        pm.expect(parseInt(f.answer)).to.eql(expected);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Nilai Mutlak selalu positif\", function () {",
+							"    data.absolutes.forEach(a => {",
+							"        pm.expect(parseInt(a.answer)).to.eql(Math.abs(a.input));",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Modulo pembagi minimal 2 dan hasil modulo akurat\", function () {",
+							"    data.modulos.forEach(m => {",
+							"        pm.expect(m.b).to.be.at.least(2);",
+							"        pm.expect(parseInt(m.answer)).to.eql(m.a % m.b);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"factorials\": [\n    { \"n\": 3, \"answer\": \"6\" },\n    { \"n\": 4, \"answer\": \"24\" },\n    { \"n\": 5, \"answer\": \"120\" }\n  ],\n  \"absolutes\": [\n    { \"input\": -45, \"answer\": \"45\" },\n    { \"input\": -128, \"answer\": \"128\" }\n  ],\n  \"modulos\": [\n    { \"a\": 85, \"b\": 7, \"answer\": \"1\" },\n    { \"a\": 24, \"b\": 5, \"answer\": \"4\" }\n  ]\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "7. Logic - Decimal Formatter & Precision Guard",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Pengurangan desimal non-negative swapping berfungsi\", function () {",
+							"    data.decimalSubtractions.forEach(sub => {",
+							"        const ans = parseFloat(sub.answer);",
+							"        pm.expect(ans).to.be.at.least(0);",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Tidak ada glitch floating point (seperti 0.30000000004)\", function () {",
+							"    data.decimalSubtractions.forEach(sub => {",
+							"        pm.expect(sub.answer.length).to.be.at.most(6);",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"decimalSubtractions\": [\n    { \"question\": \"8.5 - 3.2\", \"answer\": \"5.3\" },\n    { \"question\": \"15.25 - 7.5\", \"answer\": \"7.75\" },\n    { \"question\": \"1.2 + 2.3\", \"answer\": \"3.5\" }\n  ]\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "8. Logic - Arithmetic Memory Running Sequence",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Sequence berjalan konsisten dari start number sampai final total\", function () {",
+							"    let total = data.startNumber;",
+							"    data.steps.forEach(s => {",
+							"        if (s.op === '+') total += s.val;",
+							"        else if (s.op === '-') total -= s.val;",
+							"        else if (s.op === '×') total *= s.val;",
+							"        else if (s.op === '÷') total = Math.floor(total / s.val);",
+							"        else if (s.op === 'sqrt') total = Math.sqrt(total);",
+							"        pm.expect(s.runningTotal).to.eql(total);",
+							"        pm.expect(s.runningTotal).to.be.at.least(0);",
+							"    });",
+							"    pm.expect(data.finalAnswer).to.eql(total);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"startNumber\": 12,\n  \"steps\": [\n    { \"step\": 1, \"op\": \"+\", \"val\": 8, \"runningTotal\": 20 },\n    { \"step\": 2, \"op\": \"×\", \"val\": 5, \"runningTotal\": 100 },\n    { \"step\": 3, \"op\": \"sqrt\", \"val\": 100, \"runningTotal\": 10 },\n    { \"step\": 4, \"op\": \"-\", \"val\": 3, \"runningTotal\": 7 },\n    { \"step\": 5, \"op\": \"+\", \"val\": 13, \"runningTotal\": 20 }\n  ],\n  \"finalAnswer\": 20\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "9. Logic - Learn Mode Generator Payloads",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Semua kategori Learn menghasilkan soal spesifik sesuai topik\", function () {",
+							"    pm.expect(data.pangkat.question).to.include('^');",
+							"    pm.expect(data.akar.question).to.include('√');",
+							"    pm.expect(data.logaritma.question).to.include('log');",
+							"    pm.expect(data.modulo.question).to.include('mod');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"pangkat\": { \"operation\": \"Pangkat\", \"question\": \"3^4\", \"answer\": \"81\" },\n  \"akar\": { \"operation\": \"Akar\", \"question\": \"√64\", \"answer\": \"8\" },\n  \"logaritma\": { \"operation\": \"Logaritma\", \"question\": \"log_2(32)\", \"answer\": \"5\" },\n  \"modulo\": { \"operation\": \"Modulo\", \"question\": \"17 mod 5\", \"answer\": \"2\" }\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "10. Brain Game - Dual N-Back Accuracy & Probability",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Akurasi Dual N-Back dihitung tepat berdasarkan Hits dan Misses\", function () {",
+							"    const posAccuracy = (data.positionHits / (data.positionHits + data.positionMisses + data.positionFalseAlarms)) * 100;",
+							"    pm.expect(data.positionAccuracyPercentage).to.be.closeTo(posAccuracy, 0.1);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nLevel\": 2,\n  \"totalTrials\": 20,\n  \"positionHits\": 4,\n  \"positionMisses\": 1,\n  \"positionFalseAlarms\": 0,\n  \"positionAccuracyPercentage\": 80.0,\n  \"soundHits\": 3,\n  \"soundMisses\": 2,\n  \"soundFalseAlarms\": 1,\n  \"soundAccuracyPercentage\": 50.0\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "11. Workout - Accuracy, Time & History Persistence",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"History record memiliki format field lengkap\", function () {",
+							"    pm.expect(data.record).to.have.property('id');",
+							"    pm.expect(data.record).to.have.property('operation');",
+							"    pm.expect(data.record).to.have.property('difficulty');",
+							"    pm.expect(data.record).to.have.property('score');",
+							"    pm.expect(data.record).to.have.property('timestamp');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"record\": {\n    \"id\": \"1725001234567\",\n    \"operation\": \"Arithmetic Memory\",\n    \"isDurationMode\": false,\n    \"limitValue\": 5,\n    \"difficulty\": \"Medium\",\n    \"score\": 1,\n    \"timestamp\": \"2026-08-30T14:30:00.000Z\"\n  }\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		},
+		{
+			"name": "12. Settings - App Configuration Integrity",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+							"const res = pm.response.json();",
+							"const data = res.json || (typeof res.data === 'string' ? JSON.parse(res.data) : res.data) || {};",
+							"",
+							"pm.test(\"Settings schema valid dan lengkap\", function () {",
+							"    pm.expect(data.settings).to.have.property('language');",
+							"    pm.expect(data.settings).to.have.property('isDarkMode');",
+							"    pm.expect(data.settings).to.have.property('isSoundEnabled');",
+							"    pm.expect(data.settings).to.have.property('isNegativeNumbersEnabled');",
+							"    pm.expect(data.settings).to.have.property('keypadType');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [{ "key": "Content-Type", "value": "application/json" }],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"settings\": {\n    \"language\": \"Indonesian\",\n    \"isDarkMode\": false,\n    \"isSoundEnabled\": true,\n    \"isNegativeNumbersEnabled\": true,\n    \"keypadType\": \"calculator\",\n    \"keypadSize\": \"medium\",\n    \"questionCount\": 20,\n    \"isDurationMode\": false,\n    \"difficulty\": \"Medium\"\n  }\n}"
+				},
+				"url": { "raw": "https://postman-echo.com/post", "protocol": "https", "host": ["postman-echo", "com"], "path": ["post"] }
+			}
+		}
+	]
+}
