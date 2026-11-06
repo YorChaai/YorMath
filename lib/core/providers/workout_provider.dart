@@ -82,16 +82,17 @@ class WorkoutProvider extends ChangeNotifier {
   Timer? _countdownTimer;
 
   final LearnConfig? learnConfig;
-
   final MasteryProvider? masteryProvider;
+  final List<MathProblem>? customProblems;
 
   WorkoutProvider({
     required this.settings, 
     required this.operation, 
     this.learnConfig,
     this.masteryProvider,
+    this.customProblems,
   }) {
-    if (settings.isDurationMode) {
+    if (settings.isDurationMode && (customProblems == null || customProblems!.isEmpty)) {
       _remainingSeconds = settings.durationMinutes * 60;
     }
     _startCountdown();
@@ -137,7 +138,16 @@ class WorkoutProvider extends ChangeNotifier {
   }
 
   void _generateNextProblem() {
-    _currentProblem = _generator.generate(operation, settings, learnConfig: learnConfig);
+    if (customProblems != null && customProblems!.isNotEmpty) {
+      if (_questionIndex <= customProblems!.length) {
+        _currentProblem = customProblems![_questionIndex - 1];
+      } else {
+        _finishGame();
+        return;
+      }
+    } else {
+      _currentProblem = _generator.generate(operation, settings, learnConfig: learnConfig);
+    }
     _userAnswer = '';
     _isLastAnswerCorrect = null;
     notifyListeners();
@@ -196,8 +206,16 @@ class WorkoutProvider extends ChangeNotifier {
       }
       _currentQuestionAttempted = false;
       
-      if (!settings.isDurationMode && _questionIndex >= settings.questionCount) {
-        _finishGame();
+      final isCustomList = customProblems != null && customProblems!.isNotEmpty;
+      final totalTarget = isCustomList ? customProblems!.length : settings.questionCount;
+      
+      if (isCustomList || !settings.isDurationMode) {
+        if (_questionIndex >= totalTarget) {
+          _finishGame();
+        } else {
+          _questionIndex++;
+          _generateNextProblem();
+        }
       } else {
         _questionIndex++;
         _generateNextProblem();

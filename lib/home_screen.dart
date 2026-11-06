@@ -8,6 +8,7 @@ import 'presentation/custom_difficulty/screens/custom_difficulty_screen.dart';
 import 'presentation/workout/screens/game_history_screen.dart';
 import 'core/providers/settings_provider.dart';
 import 'core/localization/app_localizations.dart';
+import 'presentation/home/widgets/daily_streak_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -113,6 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   constraints: const BoxConstraints(maxWidth: 480),
                   child: Column(
                     children: [
+                      const DailyStreakCard(),
+                      const SizedBox(height: 6),
                       // Primary Modes
                       ...primaryModes.map((item) {
                         final label = AppLocalizations.get(lang, item['key']!);

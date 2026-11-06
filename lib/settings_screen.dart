@@ -21,10 +21,11 @@ class SettingsScreen extends StatelessWidget {
     
     final settings = provider.settings;
     final lang = settings.language;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0288D1),
+        backgroundColor: isDark ? const Color(0xFF1E1E2E) : const Color(0xFF0288D1),
         foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -147,7 +148,7 @@ class SettingsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(AppLocalizations.get(lang, 'questions'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textColor)),
+          Text(AppLocalizations.get(lang, 'questions'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor)),
           const SizedBox(height: 12),
           _buildSegmentCore(
             context,
@@ -159,7 +160,7 @@ class SettingsScreen extends StatelessWidget {
             lang,
           ),
           const SizedBox(height: 16),
-          Text(AppLocalizations.get(lang, 'duration_minutes'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: textColor)),
+          Text(AppLocalizations.get(lang, 'duration_minutes'), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: textColor)),
           const SizedBox(height: 12),
           _buildSegmentCore(
             context,
@@ -186,7 +187,7 @@ class SettingsScreen extends StatelessWidget {
   ) {
     bool isCustomActive = activeValue != -1 && !standardOptions.contains(activeValue);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final unselectedColor = isDark ? Colors.white70 : Colors.black87;
+    final unselectedColor = isDark ? Colors.white : Colors.black87;
     final borderColor = isDark ? Colors.white24 : Colors.grey.shade300;
     const activeColor = Color(0xFF0288D1);
 

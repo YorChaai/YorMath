@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:mathall/core/providers/settings_provider.dart';
 import 'package:mathall/data/models/app_settings.dart';
 import 'package:mathall/presentation/custom_difficulty/widgets/preset_edit_dialog.dart';
+import 'package:mathall/presentation/custom_difficulty/widgets/live_question_preview.dart';
 import 'dart:math';
 
 class CustomDifficultyScreen extends StatelessWidget {
@@ -371,6 +372,16 @@ class CustomDifficultyScreen extends StatelessWidget {
                         contentPadding: EdgeInsets.zero,
                       ),
                     ],
+                    LiveQuestionPreview(
+                      presetType: selectedVarType,
+                      xDigit: xDigit,
+                      yDigit: selectedVarType == 2 ? yDigit : null,
+                      baseDigit: (selectedVarType == 3 || selectedVarType == 4) ? baseDigit : null,
+                      akarLimit: selectedVarType == 3 ? akarLimit : null,
+                      pangkatLimit: selectedVarType == 3 ? pangkatLimit : null,
+                      decimalPlaces: selectedVarType == 2 ? decimalPlaces : null,
+                      maxThreshold: (selectedVarType == 1 || selectedVarType == 2 || selectedVarType == 4) ? maxThreshold : null,
+                    ),
                   ],
                 ),
               ),

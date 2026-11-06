@@ -2,10 +2,30 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/models/workout_result.dart';
 
+class StreakDayInfo {
+  final String dayName;
+  final DateTime date;
+  final bool isPracticed;
+  final bool isToday;
+  final bool isFuture;
+  final int count;
+
+  StreakDayInfo({
+    required this.dayName,
+    required this.date,
+    required this.isPracticed,
+    required this.isToday,
+    required this.isFuture,
+    required this.count,
+  });
+}
+
 class HistoryProvider extends ChangeNotifier {
   static const String _storageKey = 'workout_history';
+  static const String _bestStreakKey = 'best_streak';
   List<WorkoutResult> _results = [];
   bool _isLoaded = false;
+  int _bestStreak = 0;
 
   List<WorkoutResult> get results => _results;
   bool get isLoaded => _isLoaded;
@@ -13,6 +33,7 @@ class HistoryProvider extends ChangeNotifier {
   Future<void> loadHistory() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String>? items = prefs.getStringList(_storageKey);
+    _bestStreak = prefs.getInt(_bestStreakKey) ?? 0;
     
     if (items != null) {
       final List<WorkoutResult> loaded = [];
@@ -23,6 +44,13 @@ class HistoryProvider extends ChangeNotifier {
       }
       _results = loaded;
     }
+    
+    final computedBest = _calculateBestStreakFromHistory();
+    if (computedBest > _bestStreak) {
+      _bestStreak = computedBest;
+      await prefs.setInt(_bestStreakKey, _bestStreak);
+    }
+    
     _isLoaded = true;
     notifyListeners();
   }
@@ -33,6 +61,14 @@ class HistoryProvider extends ChangeNotifier {
     if (_results.length > 1000) {
       _results.removeAt(0);
     }
+    
+    final current = currentStreak;
+    if (current > _bestStreak) {
+      _bestStreak = current;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(_bestStreakKey, _bestStreak);
+    }
+    
     notifyListeners();
     await _saveHistory();
   }
@@ -103,6 +139,63 @@ class HistoryProvider extends ChangeNotifier {
       checkDay = checkDay.subtract(const Duration(days: 1));
     }
     return streak;
+  }
+
+  int get bestStreak {
+    final computed = _calculateBestStreakFromHistory();
+    return computed > _bestStreak ? computed : _bestStreak;
+  }
+
+  int _calculateBestStreakFromHistory() {
+    final counts = dailyGameCounts;
+    if (counts.isEmpty) return 0;
+    final sortedDates = counts.keys.toList()..sort();
+    int maxStreak = 0;
+    int currentRun = 0;
+    DateTime? prev;
+    for (var date in sortedDates) {
+      if (prev == null || date.difference(prev).inDays == 1) {
+        currentRun++;
+      } else {
+        currentRun = 1;
+      }
+      if (currentRun > maxStreak) {
+        maxStreak = currentRun;
+      }
+      prev = date;
+    }
+    return maxStreak;
+  }
+
+  bool get isPracticedToday {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    return dailyGameCounts.containsKey(today);
+  }
+
+  List<StreakDayInfo> getCurrentWeekStreak([String lang = 'Indonesian']) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    // Find Monday of the current week (weekday: 1 = Mon, ..., 7 = Sun)
+    final monday = today.subtract(Duration(days: now.weekday - 1));
+    final labels = lang == 'Indonesian'
+        ? ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min']
+        : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+    final List<StreakDayInfo> week = [];
+    for (int i = 0; i < 7; i++) {
+      final date = monday.add(Duration(days: i));
+      final count = dailyGameCounts[date] ?? 0;
+      week.add(StreakDayInfo(
+        dayName: labels[i],
+        date: date,
+        isPracticed: count > 0,
+        isToday: date.year == today.year && date.month == today.month && date.day == today.day,
+        isFuture: date.isAfter(today),
+        count: count,
+      ));
+    }
+    return week;
   }
 
   int get averageCorrect {

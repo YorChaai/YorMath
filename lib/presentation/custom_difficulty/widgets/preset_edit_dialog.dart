@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mathall/data/models/app_settings.dart';
 import 'package:mathall/core/providers/settings_provider.dart';
+import 'live_question_preview.dart';
 
   void showEditPresetDialog(BuildContext context, SettingsProvider provider, CustomPreset preset, int presetType) {
     String name = preset.name;
@@ -510,6 +511,16 @@ import 'package:mathall/core/providers/settings_provider.dart';
                         onChanged: (val) => setState(() => allowModulo = val),
                       ),
                     ],
+                    LiveQuestionPreview(
+                      presetType: presetType,
+                      xDigit: xDigit,
+                      yDigit: yDigit,
+                      baseDigit: baseDigit,
+                      akarLimit: akarLimit,
+                      pangkatLimit: pangkatLimit,
+                      decimalPlaces: decimalPlaces,
+                      maxThreshold: maxThreshold,
+                    ),
                   ],
                 ),
               ),

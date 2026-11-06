@@ -10,17 +10,20 @@ import 'result_screen.dart';
 import '../../../core/providers/history_provider.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../../../data/models/learn_config.dart';
+import '../../../data/models/math_problem.dart';
 
 class WorkoutScreen extends StatelessWidget {
   final String operation;
   final LearnConfig? learnConfig;
   final bool? overrideNegativeNumbers;
+  final List<MathProblem>? customProblems;
 
   const WorkoutScreen({
     super.key,
     required this.operation,
     this.learnConfig,
     this.overrideNegativeNumbers,
+    this.customProblems,
   });
 
   @override
@@ -35,6 +38,7 @@ class WorkoutScreen extends StatelessWidget {
 
     final showNegative = settings.isNegativeNumbersEnabled || operation == 'Negative Numbers';
     final showDecimal = operation == 'Desimal' || operation == 'Pecahan';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return ChangeNotifierProvider(
       create: (_) => WorkoutProvider(
@@ -42,16 +46,45 @@ class WorkoutScreen extends StatelessWidget {
         operation: operation,
         learnConfig: learnConfig,
         masteryProvider: masteryProvider,
+        customProblems: customProblems,
       ),
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
         appBar: AppBar(
-          backgroundColor: primaryColor,
+          backgroundColor: isDark ? const Color(0xFF1E1E2E) : primaryColor,
           foregroundColor: Colors.white,
           elevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4),
+            child: Consumer<WorkoutProvider>(
+              builder: (context, provider, child) {
+                double progress = 0.0;
+                final isCustom = customProblems != null && customProblems!.isNotEmpty;
+                if (!isCustom && settings.isDurationMode) {
+                  final totalSec = settings.durationMinutes * 60;
+                  if (totalSec > 0) {
+                    progress = (1.0 - (provider.remainingSeconds / totalSec)).clamp(0.0, 1.0);
+                  }
+                } else {
+                  final totalQ = isCustom ? customProblems!.length : settings.questionCount;
+                  if (totalQ > 0) {
+                    progress = ((provider.questionIndex - 1) / totalQ).clamp(0.0, 1.0);
+                  }
+                }
+                return LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: isDark ? Colors.white12 : Colors.white24,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isDark ? const Color(0xFF00E676) : const Color(0xFF69F0AE),
+                  ),
+                  minHeight: 4,
+                );
+              },
+            ),
           ),
           title: Consumer<WorkoutProvider>(
             builder: (context, provider, child) {
@@ -172,12 +205,15 @@ class WorkoutScreen extends StatelessWidget {
                                     width: double.infinity,
                                     padding: const EdgeInsets.symmetric(vertical: 20),
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(color: const Color(0xFFCFD8DC), width: 1.5),
+                                      color: isDark ? const Color(0xFF1E1E2E) : Colors.white,
+                                      border: Border.all(
+                                        color: isDark ? Colors.white12 : const Color(0xFFCFD8DC),
+                                        width: 1.5,
+                                      ),
                                       borderRadius: BorderRadius.circular(8),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withValues(alpha: 0.03),
+                                          color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.03),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),
@@ -190,10 +226,10 @@ class WorkoutScreen extends StatelessWidget {
                                           fit: BoxFit.scaleDown,
                                           child: Text(
                                             provider.currentProblem?.questionText ?? '',
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               fontSize: 44,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.black87,
+                                              color: isDark ? Colors.white : Colors.black87,
                                             ),
                                           ),
                                         ),
@@ -208,16 +244,16 @@ class WorkoutScreen extends StatelessWidget {
                                     height: 64,
                                     decoration: BoxDecoration(
                                       color: provider.isLastAnswerCorrect == false
-                                          ? const Color(0xFFFFEBEE)
+                                          ? (isDark ? const Color(0xFF4A1818) : const Color(0xFFFFEBEE))
                                           : (provider.isLastAnswerCorrect == true
-                                              ? const Color(0xFFE8F5E9)
-                                              : Colors.white),
+                                              ? (isDark ? const Color(0xFF143E1F) : const Color(0xFFE8F5E9))
+                                              : (isDark ? const Color(0xFF26263B) : Colors.white)),
                                       border: Border.all(
                                         color: provider.isLastAnswerCorrect == false
                                             ? Colors.redAccent
                                             : (provider.isLastAnswerCorrect == true
                                                 ? Colors.green
-                                                : const Color(0xFF90CAF9)),
+                                                : (isDark ? Colors.white24 : const Color(0xFF90CAF9))),
                                         width: 1.5,
                                       ),
                                       borderRadius: BorderRadius.circular(8),
@@ -236,7 +272,7 @@ class WorkoutScreen extends StatelessWidget {
                                                   ? Colors.red
                                                   : (provider.isLastAnswerCorrect == true
                                                       ? Colors.green
-                                                      : Colors.black87),
+                                                      : (isDark ? Colors.white : Colors.black87)),
                                             ),
                                           ),
                                         ),

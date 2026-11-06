@@ -48,6 +48,18 @@ class _ResultScreenState extends State<ResultScreen> {
     );
     final last5 = history.take(5).toList();
 
+    final isNewBest = top5.isNotEmpty && top5.first.id == widget.result.id;
+    double? avgSecondsPerQuestion;
+    if (widget.result.isDurationMode) {
+      if (widget.result.score > 0) {
+        avgSecondsPerQuestion = (widget.result.limitValue * 60) / widget.result.score;
+      }
+    } else {
+      if (widget.result.limitValue > 0) {
+        avgSecondsPerQuestion = widget.result.score / widget.result.limitValue;
+      }
+    }
+
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF5F7FA),
       appBar: AppBar(
@@ -89,6 +101,41 @@ class _ResultScreenState extends State<ResultScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (isNewBest)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 14),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFFFB300), Color(0xFFFF6F00)],
+                      ),
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFFFF8F00).withValues(alpha: 0.4),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.emoji_events, color: Colors.white, size: 26),
+                        const SizedBox(width: 8),
+                        Text(
+                          lang == 'Indonesian' ? '🏆 REKOR TERBAIK BARU!' : '🏆 NEW BEST SCORE!',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
                 // Config summary card
                 Card(
                   elevation: 2,
@@ -190,6 +237,38 @@ class _ResultScreenState extends State<ResultScreen> {
                             ],
                           ),
                         ),
+                        if (avgSecondsPerQuestion != null) ...[
+                          Container(height: 36, width: 1, color: isDark ? Colors.white12 : Colors.grey.shade300),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                const Icon(Icons.bolt, color: Color(0xFFFF9100), size: 22),
+                                const SizedBox(height: 4),
+                                Text(
+                                  '${avgSecondsPerQuestion.toStringAsFixed(1)}s',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? Colors.white : Colors.black87,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  lang == 'Indonesian' ? 'dtk/soal' : 'sec/q',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
