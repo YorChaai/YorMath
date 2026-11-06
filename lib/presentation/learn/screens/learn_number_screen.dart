@@ -41,16 +41,17 @@ class LearnNumberScreen extends StatelessWidget {
 
     int count = (endNumber - startNumber) + 1;
     const primaryColor = Color(0xFF0288D1);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
       appBar: AppBar(
         title: Text(
           title,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
         centerTitle: true,
-        backgroundColor: primaryColor,
+        backgroundColor: isDark ? const Color(0xFF1E1E2E) : primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(

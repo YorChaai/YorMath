@@ -193,7 +193,7 @@ class _ResultScreenState extends State<ResultScreen> {
                             Icon(Icons.show_chart_rounded, color: chartColor, size: 22),
                             const SizedBox(width: 8),
                             Text(
-                              AppLocalizations.get(lang, "tables"),
+                              lang == 'Indonesian' ? 'Grafik Perkembangan' : 'Progress Chart',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

@@ -24,10 +24,12 @@ class AnswersScreen extends StatelessWidget {
         : (totalQuestions - firstTryCorrectCount).clamp(0, totalQuestions);
     const primaryColor = Color(0xFF0288D1);
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF121212) : Colors.white,
       appBar: AppBar(
-        backgroundColor: primaryColor,
+        backgroundColor: isDark ? const Color(0xFF1E1E2E) : primaryColor,
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
@@ -46,12 +48,12 @@ class AnswersScreen extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 24),
-              const Text(
+              Text(
                 'Answers',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: isDark ? Colors.white : Colors.black87,
                 ),
               ),
               const SizedBox(height: 12),
@@ -80,7 +82,7 @@ class AnswersScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                   itemCount: answerRecords.length,
                   separatorBuilder: (context, index) => Divider(
-                    color: Colors.grey.shade200,
+                    color: isDark ? Colors.white12 : Colors.grey.shade200,
                     height: 1,
                   ),
                   itemBuilder: (context, index) {
@@ -102,10 +104,10 @@ class AnswersScreen extends StatelessWidget {
                               children: [
                                 Text(
                                   '${record.questionText} = ',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.black87,
+                                    color: isDark ? Colors.white : Colors.black87,
                                   ),
                                 ),
                                 if (isCorrect)
