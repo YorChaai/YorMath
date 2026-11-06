@@ -16,7 +16,7 @@ class ThemeSettingsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF5F7FA),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0288D1),
+        backgroundColor: isDark ? const Color(0xFF1E1E2E) : const Color(0xFF0288D1),
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
