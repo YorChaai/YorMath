@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import '../../data/models/app_settings.dart';
 import '../../data/models/math_problem.dart';
 import '../../data/models/learn_config.dart';
@@ -209,6 +210,7 @@ class WorkoutProvider extends ChangeNotifier {
       _firstWrongAnswer ??= _userAnswer;
       // INCORRECT (Panjang digit sudah sama atau lebih, tapi salah, atau di-submit paksa)
       WorkoutAudioService().playError(isSoundEnabled: settings.isSoundEnabled);
+      HapticFeedback.mediumImpact();
 
       if (learnConfig != null && masteryProvider != null && _currentProblem!.metadata != null) {
         final meta = _currentProblem!.metadata!;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'settings_screen.dart';
 import 'presentation/learn/screens/learn_screen.dart';
 import 'presentation/learn/screens/learn_number_screen.dart';
@@ -293,8 +294,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: const Icon(Icons.share, color: primaryColor, size: 28),
                       tooltip: 'Share',
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Bagikan Math Workout ke teman-teman! 🚀')),
+                        SharePlus.instance.share(
+                          ShareParams(
+                            text: 'Tingkatkan kecepatan berhitung dan latih ketajaman otakmu setiap hari bersama YorMath! 🧠⚡\n'
+                                'Download dan coba latihan sekarang!',
+                          ),
                         );
                       },
                     ),

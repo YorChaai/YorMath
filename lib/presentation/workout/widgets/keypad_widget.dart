@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class KeypadWidget extends StatelessWidget {
   final ValueChanged<String> onKeyPress;
@@ -62,7 +63,10 @@ class KeypadWidget extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6),
                           ),
                         ),
-                        onPressed: () => onKeyPress(key),
+                        onPressed: () {
+                          HapticFeedback.lightImpact();
+                          onKeyPress(key);
+                        },
                         child: Text(
                           key,
                           style: TextStyle(
@@ -77,97 +81,198 @@ class KeypadWidget extends StatelessWidget {
               ),
             ),
 
-          // Bottom Row: [Optional -/. or empty] [0] [Backspace]
+          // Bottom Row
           Padding(
             padding: const EdgeInsets.only(bottom: 6.0),
             child: Row(
               children: [
-                // Col 1: Negative sign or Decimal or Empty placeholder
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: SizedBox(
-                      height: height,
-                      child: (showNegative || showDecimal)
-                          ? ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: buttonColor,
-                                foregroundColor: Colors.white,
-                                elevation: 1,
-                                padding: EdgeInsets.zero,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                              ),
-                              onPressed: () => onKeyPress(showNegative ? '-' : '.'),
-                              child: Text(
-                                showNegative ? '–' : '.',
-                                style: TextStyle(
-                                  fontSize: fontSize,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )
-                          : const SizedBox.shrink(),
+                if (showNegative && showDecimal) ...[
+                  // Both Negative and Decimal
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: SizedBox(
+                        height: height,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: buttonColor,
+                            foregroundColor: Colors.white,
+                            elevation: 1,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                          ),
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            onKeyPress('-');
+                          },
+                          child: Text('–', style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-
-                // Col 2: '0'
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: SizedBox(
-                      height: height,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: buttonColor,
-                          foregroundColor: Colors.white,
-                          elevation: 1,
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: SizedBox(
+                        height: height,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: buttonColor,
+                            foregroundColor: Colors.white,
+                            elevation: 1,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
                           ),
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            onKeyPress('0');
+                          },
+                          child: Text('0', style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold)),
                         ),
-                        onPressed: () => onKeyPress('0'),
-                        child: Text(
-                          '0',
-                          style: TextStyle(
-                            fontSize: fontSize,
-                            fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: SizedBox(
+                        height: height,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: buttonColor,
+                            foregroundColor: Colors.white,
+                            elevation: 1,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                          ),
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            onKeyPress('.');
+                          },
+                          child: Text('.', style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                      child: SizedBox(
+                        height: height,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: buttonColor,
+                            foregroundColor: Colors.white,
+                            elevation: 1,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                          ),
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            onDelete();
+                          },
+                          child: const Icon(Icons.backspace_outlined, color: Colors.white, size: 22),
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else ...[
+                  // Standard 3-column layout
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                      child: SizedBox(
+                        height: height,
+                        child: (showNegative || showDecimal)
+                            ? ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: buttonColor,
+                                  foregroundColor: Colors.white,
+                                  elevation: 1,
+                                  padding: EdgeInsets.zero,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  HapticFeedback.lightImpact();
+                                  onKeyPress(showNegative ? '-' : '.');
+                                },
+                                child: Text(
+                                  showNegative ? '–' : '.',
+                                  style: TextStyle(
+                                    fontSize: fontSize,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                    ),
+                  ),
+
+                  // Col 2: '0'
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                      child: SizedBox(
+                        height: height,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: buttonColor,
+                            foregroundColor: Colors.white,
+                            elevation: 1,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                          ),
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            onKeyPress('0');
+                          },
+                          child: Text(
+                            '0',
+                            style: TextStyle(
+                              fontSize: fontSize,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
 
-                // Col 3: Backspace
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: SizedBox(
-                      height: height,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: buttonColor,
-                          foregroundColor: Colors.white,
-                          elevation: 1,
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
+                  // Col 3: Backspace
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                      child: SizedBox(
+                        height: height,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: buttonColor,
+                            foregroundColor: Colors.white,
+                            elevation: 1,
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(6),
+                            ),
                           ),
-                        ),
-                        onPressed: onDelete,
-                        child: const Icon(
-                          Icons.backspace_outlined,
-                          color: Colors.white,
-                          size: 24,
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            onDelete();
+                          },
+                          child: const Icon(
+                            Icons.backspace_outlined,
+                            color: Colors.white,
+                            size: 24,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

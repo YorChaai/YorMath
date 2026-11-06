@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/providers/history_provider.dart';
 import '../../../core/providers/settings_provider.dart';
 import '../../../data/models/workout_result.dart';
@@ -62,6 +63,23 @@ class _ResultScreenState extends State<ResultScreen> {
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.share_rounded),
+            tooltip: 'Share',
+            onPressed: () {
+              final scoreText = widget.result.isDurationMode
+                  ? '${widget.result.score} ${lang == 'Indonesian' ? 'soal terjawab' : 'questions answered'}'
+                  : _formatTime(widget.result.score);
+              final shareText = '⚡ YorMath — Latihan Matematika\n'
+                  'Mode: ${AppLocalizations.get(lang, widget.result.operation)} (${widget.result.difficulty})\n'
+                  '${widget.result.isDurationMode ? "Skor" : "Waktu"}: $scoreText\n'
+                  'Bisa kalahkan rekor saya? Yuk latih ketajaman otakmu dengan YorMath! 🧠🔥';
+              SharePlus.instance.share(ShareParams(text: shareText));
+            },
+          ),
+          const SizedBox(width: 4),
+        ],
       ),
       body: Center(
         child: ConstrainedBox(
