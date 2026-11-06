@@ -8,6 +8,7 @@ class CustomPreset {
   final int? pangkatLimit;
   final int? maxThreshold;
   final int? decimalPlaces;
+  final bool isRandomDecimalDigits;
   final int specialLimit; // deprecated, use akarLimit/pangkatLimit instead
   final bool isSwappable;
   final bool allowAkar;
@@ -34,6 +35,7 @@ class CustomPreset {
     this.pangkatLimit,
     this.maxThreshold,
     this.decimalPlaces,
+    this.isRandomDecimalDigits = false,
     this.specialLimit = 5,
     this.isSwappable = false,
     this.allowAkar = false,
@@ -61,6 +63,7 @@ class CustomPreset {
     'pangkatLimit': pangkatLimit,
     'maxThreshold': maxThreshold,
     'decimalPlaces': decimalPlaces,
+    'isRandomDecimalDigits': isRandomDecimalDigits,
     'specialLimit': specialLimit,
     'isSwappable': isSwappable,
     'allowAkar': allowAkar,
@@ -98,6 +101,7 @@ class CustomPreset {
       pangkatLimit: json['pangkatLimit'],
       maxThreshold: json['maxThreshold'],
       decimalPlaces: json['decimalPlaces'],
+      isRandomDecimalDigits: json['isRandomDecimalDigits'] ?? false,
       specialLimit: json['specialLimit'] ?? 5,
       isSwappable: json['isSwappable'] ?? false,
       allowAkar: json['allowAkar'] ?? false,

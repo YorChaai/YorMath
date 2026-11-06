@@ -32,6 +32,7 @@ import 'live_question_preview.dart';
     bool allowCampuranAddSub = preset.allowCampuranAddSub;
     bool allowCampuranMulDiv = preset.allowCampuranMulDiv;
     int? decimalPlaces = preset.decimalPlaces ?? 1;
+    bool isRandomDecimalDigits = preset.isRandomDecimalDigits;
     int? maxThreshold = preset.maxThreshold ?? 505;
 
     Widget buildStyledSwitch({required String title, required String subtitle, required IconData iconData, required Color iconColor, required bool value, required Function(bool) onChanged}) {
@@ -201,6 +202,28 @@ import 'live_question_preview.dart';
                           Switch(
                             value: isSwappable,
                             onChanged: (val) => setState(() => isSwappable = val),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Acak Digit Belakang Koma', style: TextStyle(fontWeight: FontWeight.w600)),
+                                Text(
+                                  'Variasi 1 s/d ${decimalPlaces ?? 1} digit (misal: 0.70 + 0.456)',
+                                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Switch(
+                            value: isRandomDecimalDigits,
+                            onChanged: (val) => setState(() => isRandomDecimalDigits = val),
                           ),
                         ],
                       ),
@@ -519,6 +542,7 @@ import 'live_question_preview.dart';
                       akarLimit: akarLimit,
                       pangkatLimit: pangkatLimit,
                       decimalPlaces: decimalPlaces,
+                      isRandomDecimalDigits: isRandomDecimalDigits,
                       maxThreshold: maxThreshold,
                     ),
                   ],
@@ -560,6 +584,7 @@ import 'live_question_preview.dart';
                       allowCampuranAddSub: presetType == 3 ? allowCampuranAddSub : true,
                       allowCampuranMulDiv: presetType == 3 ? allowCampuranMulDiv : true,
                       decimalPlaces: presetType == 2 ? decimalPlaces : null,
+                      isRandomDecimalDigits: presetType == 2 ? isRandomDecimalDigits : false,
                       maxThreshold: (presetType == 1 || presetType == 2 || presetType == 4) ? maxThreshold : null,
                     );
                     

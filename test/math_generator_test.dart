@@ -125,6 +125,29 @@ void main() {
         expect(problem.answer.isNotEmpty, isTrue);
       }
     });
+
+    test('Custom difficulty with isRandomDecimalDigits generates valid decimal problems', () {
+      final customPreset = CustomPreset(
+        id: 'test_rand_dec',
+        name: 'Random Dec Test',
+        xDigit: 1,
+        yDigit: 2,
+        decimalPlaces: 3,
+        isRandomDecimalDigits: true,
+      );
+      final customSettings = defaultSettings.copyWith(
+        difficulty: 'Custom',
+        var2Presets: [customPreset],
+        activeVar2PresetId: 'test_rand_dec',
+        activeNumberTypes: ['Desimal'],
+      );
+
+      for (int i = 0; i < 20; i++) {
+        final problem = generator.generate('Penjumlahan', customSettings);
+        expect(problem.questionText.contains('+'), isTrue);
+        expect(problem.answer.isNotEmpty, isTrue);
+      }
+    });
   });
 }
 

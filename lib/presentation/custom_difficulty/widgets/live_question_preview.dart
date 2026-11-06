@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 class LiveQuestionPreview extends StatelessWidget {
@@ -8,6 +9,7 @@ class LiveQuestionPreview extends StatelessWidget {
   final int? akarLimit;
   final int? pangkatLimit;
   final int? decimalPlaces;
+  final bool isRandomDecimalDigits;
   final int? maxThreshold;
 
   const LiveQuestionPreview({
@@ -19,50 +21,59 @@ class LiveQuestionPreview extends StatelessWidget {
     this.akarLimit,
     this.pangkatLimit,
     this.decimalPlaces,
+    this.isRandomDecimalDigits = false,
     this.maxThreshold,
   });
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
     final samples = _generateSamples();
 
     return Container(
-      margin: const EdgeInsets.only(top: 16),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E2E) : const Color(0xFFF0FDF4),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: isDark ? Colors.white12 : const Color(0xFF86EFAC),
-          width: 1,
-        ),
-      ),
+      margin: const EdgeInsets.only(top: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(
-                Icons.visibility_outlined,
-                size: 16,
-                color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF15803D),
-              ),
-              const SizedBox(width: 6),
-              Text(
-                'Pratinjau Soal Langsung (Live Preview)',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: isDark ? Colors.white : const Color(0xFF15803D),
+          // Header outside the box to prevent overflow
+          Padding(
+            padding: const EdgeInsets.only(left: 2, bottom: 6),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.visibility_outlined,
+                  size: 15,
+                  color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
                 ),
-              ),
-            ],
+                const SizedBox(width: 6),
+                Text(
+                  'Pratinjau Soal:',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
-          ...samples.map((s) => Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
+          // Content box containing only the equations
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E1E2E) : const Color(0xFFF0FDF4),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: isDark ? Colors.white12 : const Color(0xFF86EFAC),
+                width: 1,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: samples.map((s) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Row(
                   children: [
                     Container(
@@ -74,11 +85,11 @@ class LiveQuestionPreview extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    Flexible(
+                    Expanded(
                       child: Text(
                         s,
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 13.5,
                           fontWeight: FontWeight.w600,
                           fontFamily: 'monospace',
                           color: isDark ? Colors.grey.shade200 : const Color(0xFF1E293B),
@@ -87,7 +98,9 @@ class LiveQuestionPreview extends StatelessWidget {
                     ),
                   ],
                 ),
-              )),
+              )).toList(),
+            ),
+          ),
         ],
       ),
     );
@@ -96,14 +109,42 @@ class LiveQuestionPreview extends StatelessWidget {
   List<String> _generateSamples() {
     if (presetType == 2) {
       final yD = yDigit ?? xDigit;
+      if (decimalPlaces != null && decimalPlaces! > 0) {
+        if (isRandomDecimalDigits) {
+          if (decimalPlaces == 3) {
+            return [
+              '0.70 + 0.456 = ?',
+              '0.345 × 0.1 = ?',
+            ];
+          } else if (decimalPlaces == 2) {
+            return [
+              '0.7 + 0.48 = ?',
+              '0.35 × 0.2 = ?',
+            ];
+          } else if (decimalPlaces! >= 4) {
+            return [
+              '0.450 + 0.1234 = ?',
+              '0.7892 × 0.5 = ?',
+            ];
+          }
+          return [
+            '0.7 + 4.80 = ?',
+            '0.35 × 0.2 = ?',
+          ];
+        } else {
+          final dec = decimalPlaces!;
+          final xSample = _sampleForDigit(xDigit, 48);
+          final ySample = _sampleForDigit(yD, 7);
+          final xFormatted = (xSample / pow(10, min(dec, 2))).toStringAsFixed(dec);
+          final yFormatted = (ySample / pow(10, min(dec, 1))).toStringAsFixed(dec);
+          return [
+            '$xFormatted + $yFormatted = ?',
+            '$xFormatted × $ySample = ?',
+          ];
+        }
+      }
       final xSample = _sampleForDigit(xDigit, 48);
       final ySample = _sampleForDigit(yD, 7);
-      if (decimalPlaces != null && decimalPlaces! > 0) {
-        return [
-          '${(xSample / 10).toStringAsFixed(decimalPlaces!)} + ${(ySample / 10).toStringAsFixed(decimalPlaces!)} = ?',
-          '${(xSample / 10).toStringAsFixed(decimalPlaces!)} × $ySample = ?',
-        ];
-      }
       return [
         '$xSample + $ySample = ${xSample + ySample}',
         '$xSample × $ySample = ${xSample * ySample}',
@@ -141,4 +182,3 @@ class LiveQuestionPreview extends StatelessWidget {
     return fallback;
   }
 }
-

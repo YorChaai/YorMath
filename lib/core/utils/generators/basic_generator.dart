@@ -136,7 +136,7 @@ class BasicGenerator {
     return _Operand(formatOpt('$x', isFirstOperand), x.toDouble());
   }
 
-  MathProblem generate(String operation, AppSettings settings, int min1, int max1, int min2, int max2, {int? threshold, int? decimalPlaces}) {
+  MathProblem generate(String operation, AppSettings settings, int min1, int max1, int min2, int max2, {int? threshold, int? decimalPlaces, bool isRandomDecimalDigits = false}) {
     // Check if this operation uses the new mixed types
     bool isMixedSupported = ['Penjumlahan', 'Pengurangan', 'Perkalian', 'Pembagian'].contains(operation);
     List<String> types = isMixedSupported ? settings.activeNumberTypes : ['Bulat'];
@@ -144,9 +144,16 @@ class BasicGenerator {
     int effectiveThreshold = threshold ?? 505;
     int effectiveDecimalPrec = decimalPlaces ?? 1;
 
+    int prec1 = effectiveDecimalPrec;
+    int prec2 = effectiveDecimalPrec;
+    if (isRandomDecimalDigits && effectiveDecimalPrec > 1) {
+      prec1 = _rand.nextInt(effectiveDecimalPrec) + 1;
+      prec2 = _rand.nextInt(effectiveDecimalPrec) + 1;
+    }
+
     if (isMixedSupported) {
-      _Operand op1 = _generateOperand(types, min1, max1, settings.isNegativeNumbersEnabled, true, operation, effectiveThreshold, effectiveDecimalPrec);
-      _Operand op2 = _generateOperand(types, min2, max2, settings.isNegativeNumbersEnabled, false, operation, effectiveThreshold, effectiveDecimalPrec);
+      _Operand op1 = _generateOperand(types, min1, max1, settings.isNegativeNumbersEnabled, true, operation, effectiveThreshold, prec1);
+      _Operand op2 = _generateOperand(types, min2, max2, settings.isNegativeNumbersEnabled, false, operation, effectiveThreshold, prec2);
 
       switch (operation) {
         case 'Penjumlahan':

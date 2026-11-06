@@ -33,6 +33,7 @@ class CustomDifficultyScreen extends StatelessWidget {
     bool allowCampuranAddSub = true;
     bool allowCampuranMulDiv = true;
     int? decimalPlaces = 1;
+    bool isRandomDecimalDigits = false;
     int? maxThreshold = 505;
 
     showDialog(
@@ -186,6 +187,28 @@ class CustomDifficultyScreen extends StatelessWidget {
                             onChanged: (val) {
                               setState(() => decimalPlaces = val);
                             },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Acak Digit Belakang Koma', style: TextStyle(fontWeight: FontWeight.w600)),
+                                Text(
+                                  'Variasi 1 s/d ${decimalPlaces ?? 1} digit (misal: 0.70 + 0.456)',
+                                  style: const TextStyle(fontSize: 11, color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Switch(
+                            value: isRandomDecimalDigits,
+                            onChanged: (val) => setState(() => isRandomDecimalDigits = val),
                           ),
                         ],
                       ),
@@ -380,6 +403,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                       akarLimit: selectedVarType == 3 ? akarLimit : null,
                       pangkatLimit: selectedVarType == 3 ? pangkatLimit : null,
                       decimalPlaces: selectedVarType == 2 ? decimalPlaces : null,
+                      isRandomDecimalDigits: selectedVarType == 2 ? isRandomDecimalDigits : false,
                       maxThreshold: (selectedVarType == 1 || selectedVarType == 2 || selectedVarType == 4) ? maxThreshold : null,
                     ),
                   ],
@@ -428,6 +452,7 @@ class CustomDifficultyScreen extends StatelessWidget {
                       allowCampuranAddSub: selectedVarType == 3 ? allowCampuranAddSub : true,
                       allowCampuranMulDiv: selectedVarType == 3 ? allowCampuranMulDiv : true,
                       decimalPlaces: selectedVarType == 2 ? decimalPlaces : null,
+                      isRandomDecimalDigits: selectedVarType == 2 ? isRandomDecimalDigits : false,
                       maxThreshold: (selectedVarType == 1 || selectedVarType == 2 || selectedVarType == 4) ? maxThreshold : null,
                     );
 
@@ -879,7 +904,8 @@ class CustomDifficultyScreen extends StatelessWidget {
       baseDigitText = 'X: ${preset.xDigit} Digit$thresh';
     } else if (presetType == 2) {
       String thresh = preset.maxThreshold != null ? ', Batas: ${preset.maxThreshold}' : '';
-      String dec = preset.decimalPlaces != null ? ', Desimal: ${preset.decimalPlaces}' : '';
+      String acak = preset.isRandomDecimalDigits ? ' (Acak)' : '';
+      String dec = preset.decimalPlaces != null ? ', Desimal: ${preset.decimalPlaces}$acak' : '';
       baseDigitText = 'X: ${preset.xDigit} Digit, Y: ${preset.yDigit ?? preset.xDigit} Digit$dec$thresh';
     } else if (presetType == 3) {
       final baseVal = preset.baseDigit ?? 10;

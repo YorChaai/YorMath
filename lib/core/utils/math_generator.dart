@@ -22,6 +22,7 @@ class MathGenerator {
     int min1 = 1, max1 = 9, min2 = 1, max2 = 9;
     int? activeThreshold;
     int? activeDecimalPlaces;
+    bool activeRandomDecimal = false;
 
     if (settings.difficulty == 'Custom') {
       bool isOneVar = ['Faktorial', 'Nilai Mutlak'].contains(operation);
@@ -38,6 +39,7 @@ class MathGenerator {
         max2 = 1; min2 = 1;
         activeThreshold = p.maxThreshold;
         activeDecimalPlaces = p.decimalPlaces;
+        activeRandomDecimal = p.isRandomDecimalDigits;
       } else if (isOneVar) {
         final p = settings.var1Presets.firstWhere((p) => p.id == settings.activeVar1PresetId, orElse: () => CustomPreset(id: '', name: '', xDigit: 1));
         max1 = pow(10, p.xDigit).toInt() - 1;
@@ -45,6 +47,7 @@ class MathGenerator {
         max2 = 1; min2 = 1;
         activeThreshold = p.maxThreshold;
         activeDecimalPlaces = p.decimalPlaces;
+        activeRandomDecimal = p.isRandomDecimalDigits;
       } else {
         final p = settings.var2Presets.firstWhere((p) => p.id == settings.activeVar2PresetId, orElse: () => CustomPreset(id: '', name: '', xDigit: 1, yDigit: 1));
         max1 = pow(10, p.xDigit).toInt() - 1;
@@ -64,6 +67,7 @@ class MathGenerator {
         
         activeThreshold = p.maxThreshold;
         activeDecimalPlaces = p.decimalPlaces;
+        activeRandomDecimal = p.isRandomDecimalDigits;
       }
     } else {
       int digits = 1;
@@ -87,7 +91,7 @@ class MathGenerator {
       case 'Faktorial':
       case 'Nilai Mutlak':
       case 'Modulo':
-        return _basicGen.generate(operation, settings, min1, max1, min2, max2, threshold: activeThreshold, decimalPlaces: activeDecimalPlaces);
+        return _basicGen.generate(operation, settings, min1, max1, min2, max2, threshold: activeThreshold, decimalPlaces: activeDecimalPlaces, isRandomDecimalDigits: activeRandomDecimal);
       
       case 'Logaritma':
         bool isCampuranLog = false;
@@ -158,7 +162,7 @@ class MathGenerator {
         return generate(ops[_rand.nextInt(ops.length)], settings);
       
       default:
-        return _basicGen.generate('Penjumlahan', settings, min1, max1, min2, max2, threshold: activeThreshold, decimalPlaces: activeDecimalPlaces);
+        return _basicGen.generate('Penjumlahan', settings, min1, max1, min2, max2, threshold: activeThreshold, decimalPlaces: activeDecimalPlaces, isRandomDecimalDigits: activeRandomDecimal);
     }
   }
 
