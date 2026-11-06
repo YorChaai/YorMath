@@ -491,6 +491,7 @@ class CustomDifficultyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = context.watch<SettingsProvider>();
     final settings = provider.settings;
+    final lang = settings.language;
 
     // activeV1 is actually 1-Variable operation presets
     final activeV1 = settings.var1Presets.firstWhere(
@@ -534,25 +535,116 @@ class CustomDifficultyScreen extends StatelessWidget {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: isDesktop ? 32.0 : 16.0, vertical: 16.0),
         child: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 1000),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          FittedBox(
-                            fit: BoxFit.scaleDown,
-                            alignment: Alignment.centerLeft,
-                            child: Text(
+                if (!isDesktop) ...[
+                  Text(
+                    'Custom Difficulty',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : const Color(0xFF101828),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    lang == 'English'
+                        ? 'Configure and select presets for math operations'
+                        : 'Atur dan pilih preset untuk Operasi Matematika',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: settings.difficulty == 'Custom'
+                          ? (isDark ? const Color(0xFF1B3B22) : const Color(0xFFE8F5E9))
+                          : (isDark ? const Color(0xFF3E2723) : const Color(0xFFFFF8E1)),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: settings.difficulty == 'Custom'
+                            ? (isDark ? Colors.green.shade700 : Colors.green.shade300)
+                            : (isDark ? Colors.amber.shade700 : Colors.amber.shade300),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          settings.difficulty == 'Custom' ? Icons.check_circle : Icons.info_outline,
+                          size: 16,
+                          color: settings.difficulty == 'Custom'
+                              ? (isDark ? Colors.green.shade300 : Colors.green.shade800)
+                              : (isDark ? Colors.amber.shade300 : Colors.amber.shade900),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            settings.difficulty == 'Custom'
+                                ? (lang == 'English'
+                                    ? 'Custom mode is active for workouts'
+                                    : 'Mode Custom sedang Aktif untuk latihan game')
+                                : (lang == 'English'
+                                    ? 'Current mode: ${settings.difficulty} (Tap any preset to activate Custom)'
+                                    : 'Mode saat ini: ${settings.difficulty} (Ketuk salah satu preset untuk mengaktifkan Custom)'),
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w600,
+                              color: settings.difficulty == 'Custom'
+                                  ? (isDark ? Colors.green.shade300 : Colors.green.shade900)
+                                  : (isDark ? Colors.amber.shade300 : Colors.amber.shade900),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => _showAddPresetDialog(context, provider),
+                      icon: Icon(
+                        Icons.add_circle,
+                        color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
+                      ),
+                      label: Text(
+                        AppLocalizations.get(lang, 'create_preset'),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
+                        ),
+                      ),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
+                          width: 1.5,
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                ] else
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
                               'Custom Difficulty',
                               style: TextStyle(
                                 fontSize: 28,
@@ -560,86 +652,95 @@ class CustomDifficultyScreen extends StatelessWidget {
                                 color: isDark ? Colors.white : const Color(0xFF101828),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Atur dan pilih preset untuk Operasi Matematika',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(top: 8),
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: settings.difficulty == 'Custom'
-                                  ? (isDark ? const Color(0xFF1B3B22) : const Color(0xFFE8F5E9))
-                                  : (isDark ? const Color(0xFF3E2723) : const Color(0xFFFFF8E1)),
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: settings.difficulty == 'Custom'
-                                    ? (isDark ? Colors.green.shade700 : Colors.green.shade300)
-                                    : (isDark ? Colors.amber.shade700 : Colors.amber.shade300),
+                            const SizedBox(height: 8),
+                            Text(
+                              lang == 'English'
+                                  ? 'Configure and select presets for math operations'
+                                  : 'Atur dan pilih preset untuk Operasi Matematika',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                               ),
                             ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  settings.difficulty == 'Custom' ? Icons.check_circle : Icons.info_outline,
-                                  size: 14,
+                            Container(
+                              margin: const EdgeInsets.only(top: 8),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: settings.difficulty == 'Custom'
+                                    ? (isDark ? const Color(0xFF1B3B22) : const Color(0xFFE8F5E9))
+                                    : (isDark ? const Color(0xFF3E2723) : const Color(0xFFFFF8E1)),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
                                   color: settings.difficulty == 'Custom'
-                                      ? (isDark ? Colors.green.shade300 : Colors.green.shade800)
-                                      : (isDark ? Colors.amber.shade300 : Colors.amber.shade900),
+                                      ? (isDark ? Colors.green.shade700 : Colors.green.shade300)
+                                      : (isDark ? Colors.amber.shade700 : Colors.amber.shade300),
                                 ),
-                                const SizedBox(width: 6),
-                                Flexible(
-                                  child: Text(
-                                    settings.difficulty == 'Custom'
-                                        ? 'Mode Custom sedang Aktif untuk latihan game'
-                                        : 'Mode saat ini: ${settings.difficulty} (Ketuk salah satu preset untuk mengaktifkan Custom)',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w600,
-                                      color: settings.difficulty == 'Custom'
-                                          ? (isDark ? Colors.green.shade300 : Colors.green.shade900)
-                                          : (isDark ? Colors.amber.shade300 : Colors.amber.shade900),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    settings.difficulty == 'Custom' ? Icons.check_circle : Icons.info_outline,
+                                    size: 14,
+                                    color: settings.difficulty == 'Custom'
+                                        ? (isDark ? Colors.green.shade300 : Colors.green.shade800)
+                                        : (isDark ? Colors.amber.shade300 : Colors.amber.shade900),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  Flexible(
+                                    child: Text(
+                                      settings.difficulty == 'Custom'
+                                          ? (lang == 'English'
+                                              ? 'Custom mode is active for workouts'
+                                              : 'Mode Custom sedang Aktif untuk latihan game')
+                                          : (lang == 'English'
+                                              ? 'Current mode: ${settings.difficulty} (Tap any preset to activate Custom)'
+                                              : 'Mode saat ini: ${settings.difficulty} (Ketuk salah satu preset untuk mengaktifkan Custom)'),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: settings.difficulty == 'Custom'
+                                            ? (isDark ? Colors.green.shade300 : Colors.green.shade900)
+                                            : (isDark ? Colors.amber.shade300 : Colors.amber.shade900),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    OutlinedButton.icon(
-                      onPressed: () => _showAddPresetDialog(context, provider),
-                      icon: Icon(
-                        Icons.add_circle,
-                        color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
-                      ),
-                      label: Text(
-                        'Buat Preset Baru',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                      const SizedBox(width: 20),
+                      OutlinedButton.icon(
+                        onPressed: () => _showAddPresetDialog(context, provider),
+                        icon: Icon(
+                          Icons.add_circle,
                           color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
                         ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1)),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
+                        label: Text(
+                          AppLocalizations.get(lang, 'create_preset'),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(
+                            color: isDark ? const Color(0xFF80D8FF) : const Color(0xFF0288D1),
+                            width: 1.5,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
                 const SizedBox(height: 32),
                 if (isDesktop)
                   Column(
