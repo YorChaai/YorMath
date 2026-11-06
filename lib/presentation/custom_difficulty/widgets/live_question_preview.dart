@@ -115,15 +115,20 @@ class LiveQuestionPreview extends StatelessWidget {
       final yD = yDigit ?? xDigit;
       if (decimalPlaces != null && decimalPlaces! > 0) {
         if (isRandomDecimalDigits) {
-          if (decimalPlaces == 3) {
+          if (decimalPlaces == 1) {
             return [
-              '0.70 + 0.456 = ?',
-              '0.345 × 0.1 = ?',
+              '0.7 + 4.8 = ?',
+              '0.7 × 4.8 = ?',
             ];
           } else if (decimalPlaces == 2) {
             return [
               '0.7 + 0.48 = ?',
               '0.35 × 0.2 = ?',
+            ];
+          } else if (decimalPlaces == 3) {
+            return [
+              '0.70 + 0.456 = ?',
+              '0.345 × 0.1 = ?',
             ];
           } else if (decimalPlaces! >= 4) {
             return [
@@ -132,8 +137,8 @@ class LiveQuestionPreview extends StatelessWidget {
             ];
           }
           return [
-            '0.7 + 4.80 = ?',
-            '0.35 × 0.2 = ?',
+            '0.7 + 4.8 = ?',
+            '0.7 × 4.8 = ?',
           ];
         } else {
           final dec = decimalPlaces!;
