@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../../core/providers/settings_provider.dart';
 import '../../../core/localization/app_localizations.dart';
 import '../models/game_state.dart';
+import 'game_screen.dart';
+import 'home_screen.dart';
 
 class ResultScreen extends StatefulWidget {
   final GameState gameState;
@@ -39,6 +41,26 @@ class _ResultScreenState extends State<ResultScreen>
     super.dispose();
   }
 
+  void _backToHome(BuildContext context) {
+    bool found = false;
+    Navigator.popUntil(context, (route) {
+      if (route.settings.name == '/braingame_home') {
+        found = true;
+        return true;
+      }
+      return route.isFirst;
+    });
+    if (!found) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const HomeScreen(),
+          settings: const RouteSettings(name: '/braingame_home'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final gs = widget.gameState;
@@ -48,6 +70,11 @@ class _ResultScreenState extends State<ResultScreen>
 
     return PopScope(
       canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          _backToHome(context);
+        }
+      },
       child: Scaffold(
         backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFF5F7FA),
         body: SafeArea(
@@ -129,7 +156,12 @@ class _ResultScreenState extends State<ResultScreen>
                         height: 50,
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            Navigator.pop(context);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => GameScreen(preset: gs.preset),
+                              ),
+                            );
                           },
                           icon: const Icon(Icons.replay_rounded, size: 22),
                           label: Text(
@@ -156,9 +188,7 @@ class _ResultScreenState extends State<ResultScreen>
                         width: double.infinity,
                         height: 48,
                         child: OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.popUntil(context, (route) => route.isFirst);
-                          },
+                          onPressed: () => _backToHome(context),
                           icon: const Icon(Icons.home_rounded, size: 20),
                           label: Text(
                             AppLocalizations.get(lang, 'ke_beranda'),

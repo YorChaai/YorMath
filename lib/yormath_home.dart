@@ -50,24 +50,32 @@ class YormathHome extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _buildLogo(lang, isDark),
-                      const SizedBox(height: 60),
-                      _GameCard(
-                        label: 'BRAINGAME',
-                        icon: Icons.psychology,
-                        color: const Color(0xFF1565C0),
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const braingame.HomeScreen()),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 50),
                       _GameCard(
                         label: 'MATHALL',
+                        subtitle: lang == 'English' ? 'Speed Math Workout' : 'Latihan Berhitung Cepat',
                         icon: Icons.calculate_outlined,
                         color: const Color(0xFF1565C0),
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const mathall.HomeScreen()),
+                          MaterialPageRoute(
+                            builder: (_) => const mathall.HomeScreen(),
+                            settings: const RouteSettings(name: '/mathall_home'),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
+                      _GameCard(
+                        label: 'BRAIN FOCUS',
+                        subtitle: lang == 'English' ? 'Dual N-Back Memory' : 'Latihan Memori Kerja & Fokus',
+                        icon: Icons.psychology_rounded,
+                        color: const Color(0xFF1565C0),
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const braingame.HomeScreen(),
+                            settings: const RouteSettings(name: '/braingame_home'),
+                          ),
                         ),
                       ),
                     ],
@@ -214,12 +222,14 @@ class YormathHome extends StatelessWidget {
 
 class _GameCard extends StatefulWidget {
   final String label;
+  final String? subtitle;
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
 
   const _GameCard({
     required this.label,
+    this.subtitle,
     required this.icon,
     required this.color,
     required this.onTap,
@@ -268,7 +278,7 @@ class _GameCardState extends State<_GameCard> with SingleTickerProviderStateMixi
         onTapCancel: () => _controller.reverse(),
         child: Container(
           width: double.infinity,
-          height: 120,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
           decoration: BoxDecoration(
             color: widget.color,
             borderRadius: BorderRadius.circular(16),
@@ -283,17 +293,29 @@ class _GameCardState extends State<_GameCard> with SingleTickerProviderStateMixi
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(widget.icon, color: Colors.white, size: 40),
-              const SizedBox(height: 10),
+              Icon(widget.icon, color: Colors.white, size: 38),
+              const SizedBox(height: 8),
               Text(
                 widget.label,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
-                  letterSpacing: 2.5,
+                  letterSpacing: 2.0,
                 ),
               ),
+              if (widget.subtitle != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  widget.subtitle!,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white.withValues(alpha: 0.85),
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
