@@ -120,9 +120,10 @@ class _CustomMixedScreenState extends State<CustomMixedScreen> {
                         ),
                         trailing: ElevatedButton(
                           onPressed: provider.settings.var1Presets.isNotEmpty
-                              ? () {
-                                  Navigator.pop(context);
-                                  showEditPresetDialog(context, provider, provider.settings.activeVar1Preset, 1);
+                              ? () async {
+                                  await showEditPresetDialog(context, provider, provider.settings.activeVar1Preset, 1);
+                                  setStateDialog(() {});
+                                  setState(() {});
                                 }
                               : null,
                           child: const Text('Edit'),
@@ -138,9 +139,10 @@ class _CustomMixedScreenState extends State<CustomMixedScreen> {
                         ),
                         trailing: ElevatedButton(
                           onPressed: provider.settings.var2Presets.isNotEmpty
-                              ? () {
-                                  Navigator.pop(context);
-                                  showEditPresetDialog(context, provider, provider.settings.activeVar2Preset, 2);
+                              ? () async {
+                                  await showEditPresetDialog(context, provider, provider.settings.activeVar2Preset, 2);
+                                  setStateDialog(() {});
+                                  setState(() {});
                                 }
                               : null,
                           child: const Text('Edit'),
@@ -156,9 +158,10 @@ class _CustomMixedScreenState extends State<CustomMixedScreen> {
                         ),
                         trailing: ElevatedButton(
                           onPressed: provider.settings.otherPresets.isNotEmpty
-                              ? () {
-                                  Navigator.pop(context);
-                                  showEditPresetDialog(context, provider, provider.settings.activeOtherPreset, 3);
+                              ? () async {
+                                  await showEditPresetDialog(context, provider, provider.settings.activeOtherPreset, 3);
+                                  setStateDialog(() {});
+                                  setState(() {});
                                 }
                               : null,
                           child: const Text('Edit'),

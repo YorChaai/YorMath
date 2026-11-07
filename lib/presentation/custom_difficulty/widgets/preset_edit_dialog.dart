@@ -5,7 +5,7 @@ import 'package:mathall/core/providers/settings_provider.dart';
 import 'package:mathall/core/localization/app_localizations.dart';
 import 'live_question_preview.dart';
 
-  void showEditPresetDialog(BuildContext context, SettingsProvider provider, CustomPreset preset, int presetType) {
+  Future<void> showEditPresetDialog(BuildContext context, SettingsProvider provider, CustomPreset preset, int presetType) {
     final lang = provider.settings.language;
     String name = preset.name;
     int xDigit = preset.xDigit;
@@ -51,7 +51,7 @@ import 'live_question_preview.dart';
       );
     }
 
-    showDialog(
+    return showDialog(
       context: context,
       builder: (context) {
         return StatefulBuilder(

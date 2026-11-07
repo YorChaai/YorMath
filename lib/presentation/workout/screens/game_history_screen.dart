@@ -121,9 +121,10 @@ class _GameHistoryScreenState extends State<GameHistoryScreen> {
                             TextButton.icon(
                               icon: const Icon(Icons.edit, size: 14),
                               label: Text(lang == 'English' ? 'Edit' : 'Ubah', style: const TextStyle(fontSize: 12)),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                showEditPresetDialog(context, provider, provider.settings.activeVar1Preset, 1);
+                              onPressed: () async {
+                                await showEditPresetDialog(context, provider, provider.settings.activeVar1Preset, 1);
+                                setStateDialog(() {});
+                                setState(() {});
                               },
                             ),
                           ],
@@ -141,9 +142,10 @@ class _GameHistoryScreenState extends State<GameHistoryScreen> {
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                             ),
                             TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomDifficultyScreen()));
+                              onPressed: () async {
+                                await Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomDifficultyScreen()));
+                                setStateDialog(() {});
+                                setState(() {});
                               },
                               child: Text(lang == 'English' ? 'Manage' : 'Kelola', style: const TextStyle(fontSize: 12)),
                             ),
@@ -182,9 +184,10 @@ class _GameHistoryScreenState extends State<GameHistoryScreen> {
                             TextButton.icon(
                               icon: const Icon(Icons.edit, size: 14),
                               label: Text(lang == 'English' ? 'Edit' : 'Ubah', style: const TextStyle(fontSize: 12)),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                showEditPresetDialog(context, provider, provider.settings.activeVar2Preset, 2);
+                              onPressed: () async {
+                                await showEditPresetDialog(context, provider, provider.settings.activeVar2Preset, 2);
+                                setStateDialog(() {});
+                                setState(() {});
                               },
                             ),
                           ],
@@ -202,9 +205,10 @@ class _GameHistoryScreenState extends State<GameHistoryScreen> {
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                             ),
                             TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomDifficultyScreen()));
+                              onPressed: () async {
+                                await Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomDifficultyScreen()));
+                                setStateDialog(() {});
+                                setState(() {});
                               },
                               child: Text(lang == 'English' ? 'Manage' : 'Kelola', style: const TextStyle(fontSize: 12)),
                             ),
@@ -243,9 +247,10 @@ class _GameHistoryScreenState extends State<GameHistoryScreen> {
                             TextButton.icon(
                               icon: const Icon(Icons.edit, size: 14),
                               label: Text(lang == 'English' ? 'Edit' : 'Ubah', style: const TextStyle(fontSize: 12)),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                showEditPresetDialog(context, provider, provider.settings.activeOtherPreset, 3);
+                              onPressed: () async {
+                                await showEditPresetDialog(context, provider, provider.settings.activeOtherPreset, 3);
+                                setStateDialog(() {});
+                                setState(() {});
                               },
                             ),
                           ],
@@ -263,9 +268,10 @@ class _GameHistoryScreenState extends State<GameHistoryScreen> {
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                             ),
                             TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomDifficultyScreen()));
+                              onPressed: () async {
+                                await Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomDifficultyScreen()));
+                                setStateDialog(() {});
+                                setState(() {});
                               },
                               child: Text(lang == 'English' ? 'Manage' : 'Kelola', style: const TextStyle(fontSize: 12)),
                             ),
@@ -304,9 +310,10 @@ class _GameHistoryScreenState extends State<GameHistoryScreen> {
                             TextButton.icon(
                               icon: const Icon(Icons.edit, size: 14),
                               label: Text(lang == 'English' ? 'Edit' : 'Ubah', style: const TextStyle(fontSize: 12)),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                showEditPresetDialog(context, provider, provider.settings.activeMemoryPreset, 4);
+                              onPressed: () async {
+                                await showEditPresetDialog(context, provider, provider.settings.activeMemoryPreset, 4);
+                                setStateDialog(() {});
+                                setState(() {});
                               },
                             ),
                           ],
